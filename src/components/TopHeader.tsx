@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Search, Shield, Sparkles, CheckCircle2 } from "lucide-react";
+import { Bell, Search, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -80,7 +80,7 @@ export function TopHeader({ nama, peran, namaBengkel }: TopHeaderProps) {
         <div className="hidden text-right lg:block">
           <div className="flex items-center justify-end gap-1.5 text-xs font-medium text-foreground">
             <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Bengkel Buka (08.00 - 17.00)</span>
+            <span>{namaBengkel} · Buka (08.00 - 17.00)</span>
           </div>
           <p className="text-[11px] text-muted-foreground">{tanggalHariIni}</p>
         </div>

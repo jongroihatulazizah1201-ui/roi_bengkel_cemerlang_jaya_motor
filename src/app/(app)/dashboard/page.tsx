@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import {
   DollarSign,
   TrendingUp,
@@ -11,7 +11,6 @@ import {
   FileText,
   Clock,
   Plus,
-  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { rupiah } from "@/lib/format";
