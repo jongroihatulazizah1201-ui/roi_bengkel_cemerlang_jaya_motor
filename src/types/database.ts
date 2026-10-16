@@ -767,21 +767,49 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      catat_stok_masuk: {
+      atur_diskon: {
         Args: {
-          p_item: string
-          p_jumlah: number
-          p_keterangan?: string | null
-        }
-        Returns: void
-      }
-      sesuaikan_stok: {
-        Args: {
-          p_item: string
-          p_stok_fisik: number
+          p_wo: string
+          p_diskon: number
           p_alasan: string
         }
-        Returns: void
+        Returns: undefined
+      }
+      catat_pembayaran: {
+        Args: {
+          p_invoice: string
+          p_metode: string
+          p_jumlah: number
+        }
+        Returns: undefined
+      }
+      hapus_item_tagihan: {
+        Args: {
+          p_billing_item: string
+        }
+        Returns: undefined
+      }
+      sesuaikan_harga_item: {
+        Args: {
+          p_billing_item: string
+          p_harga: number
+          p_alasan: string
+        }
+        Returns: boolean
+      }
+      tambah_item_tagihan: {
+        Args: {
+          p_wo: string
+          p_item: string
+          p_jumlah: number
+        }
+        Returns: string
+      }
+      terbitkan_invoice: {
+        Args: {
+          p_wo: string
+        }
+        Returns: string
       }
     }
     Enums: {
