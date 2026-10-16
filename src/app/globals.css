@@ -66,10 +66,10 @@
 }
 
 :root {
-  /* Token PRD Bab 13 / PRD Chapter 13 tokens */
-  --primary-strong: #1976D2;
-  --primary-soft: #DCEBFB;
-  --bg-app: #F2F9FE;
+  /* Palet Warna: Primary #4975CC, Header/Sidebar #7546C2, Base #E9D4C3 */
+  --primary-strong: #36599B;
+  --primary-soft: #E2EAF8;
+  --bg-app: #E9D4C3;
   --bg-panel: #FFFFFF;
   --text: #212121;
   --text-body: #4A5565;
@@ -78,51 +78,95 @@
   --warning: #F59E0B;
   --danger: #E53935;
 
-  /* Warna status WO PRD 7.1, dipakai sama di badge, tab, dan grafik / WO status colors (PRD 7.1), shared by badges, tabs and charts */
+  /* Warna status WO PRD 7.1, dipakai sama di badge, tab, dan grafik */
   --status-menunggu: #9E9E9E;
-  --status-dikerjakan: #2196F3;
+  --status-dikerjakan: #4975CC;
   --status-tertunda: #F59E0B;
-  --status-selesai: #7E57C2;
+  --status-selesai: #7546C2;
   --status-siap-diambil: #4CAF50;
   --status-diambil: #2E7D32;
   --status-dibatalkan: #E53935;
 
-  /* Tema shadcn/ui dipetakan ke token di atas / shadcn/ui theme mapped onto the tokens above */
+  /* Tema shadcn/ui dipetakan ke token di atas */
   --background: var(--bg-app);
   --foreground: var(--text);
   --card: var(--bg-panel);
   --card-foreground: var(--text);
   --popover: var(--bg-panel);
   --popover-foreground: var(--text);
-  --primary: #2196F3;
+  --primary: #4975CC;
   --primary-foreground: #FFFFFF;
   --secondary: var(--primary-soft);
   --secondary-foreground: var(--primary-strong);
-  --muted: #F5F8FB;
+  --muted: #DFCEBE;
   --muted-foreground: var(--text-muted);
   --accent: var(--primary-soft);
   --accent-foreground: var(--primary-strong);
   --destructive: var(--danger);
-  --border: #EAF2FA;
-  /* Garis input sedikit lebih tegas agar kolom terlihat di atas putih / Input border slightly darker so fields stay visible on white */
-  --input: #D3E1EE;
-  --ring: #2196F3;
-  --chart-1: #2196F3;
+  --border: #DEC8B5;
+  /* Garis input */
+  --input: #D4BDAB;
+  --ring: #4975CC;
+  --chart-1: #4975CC;
   --chart-2: #4CAF50;
   --chart-3: #F59E0B;
-  --chart-4: #7E57C2;
+  --chart-4: #7546C2;
   --chart-5: #E53935;
   --radius: 10px;
-  --sidebar: var(--bg-app);
-  --sidebar-foreground: var(--text-body);
-  --sidebar-primary: #2196F3;
+
+  /* Sidebar & Header Navigation (#7546C2) */
+  --sidebar: #7546C2;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #4975CC;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: var(--primary-soft);
-  --sidebar-accent-foreground: var(--primary-strong);
-  --sidebar-border: #EAF2FA;
-  --sidebar-ring: #2196F3;
+  --sidebar-accent: rgba(255, 255, 255, 0.15);
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: rgba(255, 255, 255, 0.15);
+  --sidebar-ring: #4975CC;
 }
 
+/* Styling kontras tinggi untuk sidebar dan header bernuansa #7546C2 */
+.bg-sidebar {
+  background-color: #7546C2 !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.bg-sidebar .text-text {
+  color: #FFFFFF !important;
+}
+
+.bg-sidebar .text-muted-foreground {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.bg-sidebar a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.bg-sidebar a:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #FFFFFF !important;
+}
+
+.bg-sidebar a.bg-primary-soft {
+  background-color: #4975CC !important;
+  color: #FFFFFF !important;
+}
+
+.bg-sidebar a.bg-primary-soft svg {
+  color: #FFFFFF !important;
+}
+
+.bg-sidebar button {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #FFFFFF !important;
+}
+
+.bg-sidebar button:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
 
 @layer base {
   * {
