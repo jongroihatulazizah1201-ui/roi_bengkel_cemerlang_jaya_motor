@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -767,7 +767,97 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      laporan_laba: {
+        Args: {
+          p_dari: string
+          p_sampai: string
+        }
+        Returns: {
+          work_order_id: string
+          nomor_wo: string
+          nomor_invoice: string
+          tanggal: string
+          plat: string
+          pendapatan: number
+          modal: number
+          laba: number
+          margin_persen: number
+        }[]
+      }
+      dashboard_ringkasan: {
+        Args: {
+          p_dari: string
+          p_sampai: string
+        }
+        Returns: Json
+      }
+      dashboard_pendapatan_harian: {
+        Args: {
+          p_dari: string
+          p_sampai: string
+        }
+        Returns: {
+          tanggal: string
+          pendapatan_jasa: number
+          pendapatan_part: number
+        }[]
+      }
+      dashboard_laba_harian: {
+        Args: {
+          p_dari: string
+          p_sampai: string
+        }
+        Returns: {
+          tanggal: string
+          pendapatan: number
+          modal: number
+          laba: number
+        }[]
+      }
+      dashboard_wo_per_status: {
+        Args: {
+          p_tim?: string | null
+        }
+        Returns: {
+          status: string
+          jumlah: number
+        }[]
+      }
+      dashboard_beban_mekanik: {
+        Args: {
+          p_dari: string
+          p_sampai: string
+          p_tim?: string | null
+        }
+        Returns: {
+          mekanik: string
+          tim: string
+          wo_aktif: number
+          wo_selesai: number
+        }[]
+      }
+      dashboard_wo_selesai_harian: {
+        Args: {
+          p_dari: string
+          p_sampai: string
+        }
+        Returns: {
+          tanggal: string
+          jumlah: number
+        }[]
+      }
+      dashboard_top_item: {
+        Args: {
+          p_dari: string
+          p_sampai: string
+          p_jenis?: string
+        }
+        Returns: {
+          nama: string
+          jumlah: number
+          pendapatan: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
@@ -866,3 +956,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
