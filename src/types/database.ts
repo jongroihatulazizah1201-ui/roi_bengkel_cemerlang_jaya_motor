@@ -767,7 +767,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      catat_stok_masuk: {
+        Args: {
+          p_item: string
+          p_jumlah: number
+          p_keterangan?: string | null
+        }
+        Returns: void
+      }
+      sesuaikan_stok: {
+        Args: {
+          p_item: string
+          p_stok_fisik: number
+          p_alasan: string
+        }
+        Returns: void
+      }
     }
     Enums: {
       [_ in never]: never
