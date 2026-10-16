@@ -12,6 +12,10 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
+  Plus,
+  Trash2,
+  Package,
+  Wrench,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -61,6 +65,15 @@ export interface ItemTagihanTipe {
   harga_modal?: number;
 }
 
+export interface InventoryItemTipe {
+  id: string;
+  kode: string;
+  jenis: string;
+  nama: string;
+  harga_jual: number;
+  stok: number;
+}
+
 export interface InvoiceTipe {
   id: string;
   nomor: string;
@@ -93,6 +106,7 @@ interface Props {
   items: ItemTagihanTipe[];
   invoice: InvoiceTipe | null;
   pembayaran: PembayaranTipe[];
+  daftarInventory?: InventoryItemTipe[];
 }
 
 const OPSI_ALASAN = [
@@ -113,13 +127,16 @@ export function KomponenTagihan({
   items,
   invoice,
   pembayaran,
+  daftarInventory = [],
 }: Props) {
   const router = useRouter();
   const supabase = createClient();
 
   const isOwner = peran === "owner";
   const isAdminOrOwner = peran === "admin" || peran === "owner";
+  const isKepalaMekanikOrOwner = peran === "kepala_mekanik" || peran === "owner";
   const sudahTerbitInvoice = Boolean(invoice);
+  const bolehUbahItem = woStatus === "dikerjakan" && isKepalaMekanikOrOwner && !sudahTerbitInvoice;
 
   // Perhitungan Subtotal dan Laba
   const subtotal = items.reduce((acc, it) => acc + it.jumlah * it.harga_dipakai, 0);
@@ -134,6 +151,18 @@ export function KomponenTagihan({
     : 0;
   const labaKotor = isOwner ? total - totalModal : 0;
   const marginPersen = isOwner && total > 0 ? (labaKotor / total) * 100 : 0;
+
+  // State Dialog Tambah Item
+  const [dialogTambahItemOpen, setDialogTambahItemOpen] = useState(false);
+  const [filterJenisItem, setFilterJenisItem] = useState<"semua" | "part" | "jasa">("semua");
+  const [itemIdDipilih, setItemIdDipilih] = useState<string>("");
+  const [jumlahItem, setJumlahItem] = useState<number>(1);
+  const [sedangTambahItem, setSedangTambahItem] = useState(false);
+
+  // State Dialog Hapus Item
+  const [dialogHapusItemOpen, setDialogHapusItemOpen] = useState(false);
+  const [itemAkanDihapus, setItemAkanDihapus] = useState<ItemTagihanTipe | null>(null);
+  const [sedangHapusItem, setSedangHapusItem] = useState(false);
 
   // State Dialog Penyesuaian Harga
   const [dialogHargaOpen, setDialogHargaOpen] = useState(false);
@@ -161,6 +190,93 @@ export function KomponenTagihan({
 
   // State Detail Penyesuaian
   const [itemDetail, setItemDetail] = useState<ItemTagihanTipe | null>(null);
+
+  // Item terpilih saat tambah item
+  const selectedInventoryItem = daftarInventory.find((i) => i.id === itemIdDipilih);
+
+  // Filter inventory
+  const inventoryTerfilter = daftarInventory.filter((it) => {
+    if (filterJenisItem === "semua") return true;
+    return it.jenis === filterJenisItem;
+  });
+
+  // Handler: Tambah Item Tagihan
+  const handleBukaTambahItem = () => {
+    setItemIdDipilih("");
+    setJumlahItem(1);
+    setFilterJenisItem("semua");
+    setDialogTambahItemOpen(true);
+  };
+
+  const handleSimpanTambahItem = async () => {
+    if (!itemIdDipilih) {
+      toast.error("Silakan pilih item suku cadang atau jasa terlebih dahulu");
+      return;
+    }
+
+    if (jumlahItem < 1) {
+      toast.error("Jumlah item minimal 1");
+      return;
+    }
+
+    if (selectedInventoryItem?.jenis === "part" && selectedInventoryItem.stok < jumlahItem) {
+      toast.error(`Stok ${selectedInventoryItem.nama} hanya ${selectedInventoryItem.stok}`);
+      return;
+    }
+
+    setSedangTambahItem(true);
+    try {
+      const { error } = await supabase.rpc("tambah_item_tagihan", {
+        p_wo: woId,
+        p_item: itemIdDipilih,
+        p_jumlah: jumlahItem,
+      });
+
+      if (error) throw error;
+
+      toast.success("Item berhasil ditambahkan ke tagihan");
+      setDialogTambahItemOpen(false);
+      router.refresh();
+    } catch (err: unknown) {
+      const pesan = err instanceof Error ? err.message : "Gagal menambah item tagihan";
+      toast.error(pesan);
+    } finally {
+      setSedangTambahItem(false);
+    }
+  };
+
+  // Handler: Hapus Item Tagihan
+  const handleBukaHapusItem = (item: ItemTagihanTipe) => {
+    setItemAkanDihapus(item);
+    setDialogHapusItemOpen(true);
+  };
+
+  const handleKonfirmasiHapusItem = async () => {
+    if (!itemAkanDihapus) return;
+
+    setSedangHapusItem(true);
+    try {
+      const { error } = await supabase.rpc("hapus_item_tagihan", {
+        p_billing_item: itemAkanDihapus.id,
+      });
+
+      if (error) throw error;
+
+      toast.success(
+        itemAkanDihapus.jenis === "part"
+          ? "Item dihapus dan stok suku cadang dikembalikan"
+          : "Item jasa berhasil dihapus dari tagihan",
+      );
+      setDialogHapusItemOpen(false);
+      setItemAkanDihapus(null);
+      router.refresh();
+    } catch (err: unknown) {
+      const pesan = err instanceof Error ? err.message : "Gagal menghapus item tagihan";
+      toast.error(pesan);
+    } finally {
+      setSedangHapusItem(false);
+    }
+  };
 
   // Handler: Buka Dialog Penyesuaian Harga
   const handleBukaUbahHarga = (item: ItemTagihanTipe) => {
@@ -197,7 +313,7 @@ export function KomponenTagihan({
       if (error) throw error;
 
       if (diBawahModal) {
-        toast.warning("Harga berhasil diubah, namun berada di bawah harga modal.", {
+        toast.warning("Harga ini di bawah modal", {
           duration: 5000,
         });
       } else {
@@ -331,10 +447,10 @@ export function KomponenTagihan({
                 variant="outline"
                 className={
                   invoice.status_bayar === "lunas"
-                    ? "border-success bg-success/10 text-success"
+                    ? "border-success bg-success/10 text-success font-semibold"
                     : invoice.status_bayar === "sebagian"
-                      ? "border-warning bg-warning/10 text-warning"
-                      : "border-destructive bg-destructive/10 text-destructive"
+                      ? "border-warning bg-warning/10 text-warning font-semibold"
+                      : "border-destructive bg-destructive/10 text-destructive font-semibold"
                 }
               >
                 {invoice.status_bayar === "lunas"
@@ -396,13 +512,13 @@ export function KomponenTagihan({
         </div>
       </div>
 
-      {/* Pesan bila status belum siap_diambil untuk terbitkan invoice */}
+      {/* Info Status untuk Terbitkan Invoice */}
       {!invoice && isAdminOrOwner && woStatus !== "siap_diambil" && (
         <div className="flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/10 px-4 py-2.5 text-xs text-warning">
           <Info className="size-4 shrink-0" />
           <span>
-            Invoice baru dapat diterbitkan setelah pengerjaan selesai dan lulus QC (status{" "}
-            <strong>Siap Diambil</strong>). Saat ini status WO: <strong>{woStatus}</strong>.
+            Invoice dapat diterbitkan saat status WO <strong>Siap Diambil</strong> (lulus QC). Saat
+            ini status WO: <strong>{woStatus}</strong>.
           </span>
         </div>
       )}
@@ -410,14 +526,30 @@ export function KomponenTagihan({
       {/* Tabel Baris Tagihan (Bagian D) */}
       <Card className="py-0">
         <CardHeader className="border-b px-4 py-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base font-semibold text-text">
-              Rincian Item & Jasa ({items.length} item)
-            </CardTitle>
-            {!sudahTerbitInvoice && (
-              <span className="text-xs text-text-muted">
-                Harga dapat disesuaikan sebelum invoice terbit
-              </span>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <CardTitle className="text-base font-semibold text-text">
+                Rincian Item & Jasa ({items.length} item)
+              </CardTitle>
+              {!sudahTerbitInvoice && (
+                <p className="text-xs text-text-muted mt-0.5">
+                  {woStatus === "dikerjakan" && isKepalaMekanikOrOwner
+                    ? "Kepala Mekanik dapat menambah/menghapus item saat dikerjakan. Admin dapat menyesuaikan harga."
+                    : "Harga dapat disesuaikan oleh Admin/Owner sebelum invoice terbit"}
+                </p>
+              )}
+            </div>
+
+            {/* Tombol Tambah Item oleh Kepala Mekanik atau Owner */}
+            {bolehUbahItem && (
+              <Button
+                size="sm"
+                onClick={handleBukaTambahItem}
+                className="gap-1.5 bg-primary text-primary-foreground hover:bg-primary-strong"
+              >
+                <Plus className="size-4" />
+                Tambah Item
+              </Button>
             )}
           </div>
         </CardHeader>
@@ -437,7 +569,7 @@ export function KomponenTagihan({
                   </>
                 )}
                 <TableHead className="text-right">Subtotal</TableHead>
-                <TableHead className="w-16 pr-4 text-center">Aksi</TableHead>
+                <TableHead className="w-24 pr-4 text-center">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -448,6 +580,19 @@ export function KomponenTagihan({
                     className="py-10 text-center text-text-muted"
                   >
                     Belum ada baris spare part atau jasa pada Work Order ini.
+                    {bolehUbahItem && (
+                      <div className="mt-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleBukaTambahItem}
+                          className="gap-1.5"
+                        >
+                          <Plus className="size-4" />
+                          Tambah Item Pertama
+                        </Button>
+                      </div>
+                    )}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -467,9 +612,10 @@ export function KomponenTagihan({
                               type="button"
                               onClick={() => setItemDetail(it)}
                               title="Lihat alasan penyesuaian harga"
-                              className="inline-flex items-center text-warning hover:opacity-80"
+                              className="inline-flex items-center gap-1 rounded bg-warning/15 px-1.5 py-0.5 text-[10px] font-semibold text-warning hover:bg-warning/25"
                             >
-                              <Info className="size-3.5" />
+                              <Info className="size-3" />
+                              Disesuaikan
                             </button>
                           )}
                         </div>
@@ -506,19 +652,37 @@ export function KomponenTagihan({
                         {rupiah(barisSubtotal)}
                       </TableCell>
                       <TableCell className="pr-4 text-center">
-                        {isAdminOrOwner && !sudahTerbitInvoice ? (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleBukaUbahHarga(it)}
-                            title="Sesuaikan harga item ini"
-                            className="size-8 text-text-muted hover:text-primary"
-                          >
-                            <Pencil className="size-4" />
-                          </Button>
-                        ) : (
-                          <span className="text-xs text-text-muted">-</span>
-                        )}
+                        <div className="flex items-center justify-center gap-1">
+                          {/* Tombol Sesuaikan Harga (Admin & Owner) */}
+                          {isAdminOrOwner && !sudahTerbitInvoice && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleBukaUbahHarga(it)}
+                              title="Sesuaikan harga item ini"
+                              className="size-8 text-text-muted hover:text-primary"
+                            >
+                              <Pencil className="size-3.5" />
+                            </Button>
+                          )}
+
+                          {/* Tombol Hapus Item (Kepala Mekanik & Owner saat dikerjakan) */}
+                          {bolehUbahItem && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleBukaHapusItem(it)}
+                              title="Hapus item ini dari tagihan"
+                              className="size-8 text-text-muted hover:text-danger"
+                            >
+                              <Trash2 className="size-3.5" />
+                            </Button>
+                          )}
+
+                          {(!isAdminOrOwner || sudahTerbitInvoice) && !bolehUbahItem && (
+                            <span className="text-xs text-text-muted">-</span>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
@@ -544,110 +708,88 @@ export function KomponenTagihan({
                 Belum ada transaksi pembayaran yang dicatat.
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="pl-4">Waktu</TableHead>
-                    <TableHead>Metode</TableHead>
-                    <TableHead className="text-right">Jumlah</TableHead>
-                    <TableHead className="pr-4">Pencatat</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {pembayaran.map((p) => (
-                    <TableRow key={p.id}>
-                      <TableCell className="pl-4 text-xs text-text-muted">
-                        {tanggal(p.created_at)}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="uppercase">
-                          {p.metode}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right font-semibold text-success">
-                        {rupiah(p.jumlah)}
-                      </TableCell>
-                      <TableCell className="pr-4 text-xs text-text-muted">
-                        {p.dicatat_profil?.nama ?? "-"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="divide-y">
+                {pembayaran.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between p-3.5 text-xs">
+                    <div>
+                      <p className="font-semibold text-text capitalize">
+                        Pembayaran {p.metode}
+                      </p>
+                      <p className="text-text-muted text-[11px]">
+                        {tanggal(p.created_at)} · Dicatat oleh: {p.dicatat_profil?.nama ?? "Admin"}
+                      </p>
+                    </div>
+                    <span className="font-bold text-success text-sm">{rupiah(p.jumlah)}</span>
+                  </div>
+                ))}
+              </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Kolom Kanan: Rincian Angka & Kalkulasi */}
-        <Card className="p-4 shadow-card">
-          <CardHeader className="p-0 pb-3">
-            <CardTitle className="text-base font-semibold text-text">
-              Ringkasan Tagihan
-            </CardTitle>
-          </CardHeader>
-          <div className="space-y-3 divide-y divide-border text-sm">
-            <div className="flex justify-between pt-1">
-              <span className="text-text-muted">Subtotal Item</span>
-              <span className="font-semibold text-text">{rupiah(subtotal)}</span>
+        {/* Kolom Kanan: Rincian Angka & Diskon */}
+        <Card className="p-5 space-y-3">
+          <h3 className="text-base font-semibold text-text border-b pb-2">Ringkasan Tagihan</h3>
+
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-text-muted">Subtotal</span>
+              <span className="font-medium text-text">{rupiah(subtotal)}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-3">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <span className="text-text-muted">Diskon</span>
+                <span className="text-text-muted">Diskon Total</span>
                 {isAdminOrOwner && !sudahTerbitInvoice && (
                   <Button
-                    variant="ghost"
+                    variant="link"
                     size="sm"
                     onClick={() => {
-                      setInputDiskon(diskonAwal);
+                      setInputDiskon(diskon);
                       setInputAlasanDiskon(alasanDiskonAwal ?? "");
                       setDialogDiskonOpen(true);
                     }}
-                    className="h-6 gap-1 px-1.5 text-xs text-primary hover:underline"
+                    className="h-auto p-0 text-xs text-primary underline"
                   >
-                    <Tag className="size-3" />
-                    Ubah Diskon
+                    (Atur Diskon)
                   </Button>
                 )}
               </div>
-              <span className="font-semibold text-danger">
-                {diskon > 0 ? `-${rupiah(diskon)}` : rupiah(0)}
-              </span>
+              <span className="font-medium text-danger">-{rupiah(diskon)}</span>
             </div>
-            {diskon > 0 && alasanDiskonAwal && (
-              <p className="text-xs italic text-text-muted">Alasan diskon: {alasanDiskonAwal}</p>
+
+            {alasanDiskonAwal && diskon > 0 && (
+              <div className="text-[11px] text-text-muted italic bg-muted/40 p-1.5 rounded">
+                Alasan diskon: {alasanDiskonAwal}
+              </div>
             )}
 
-            <div className="flex justify-between pt-3 text-base font-bold text-text">
-              <span>Total Tagihan</span>
+            <div className="flex justify-between border-t pt-2 text-base font-bold">
+              <span className="text-text">Total Tagihan</span>
               <span className="text-primary">{rupiah(total)}</span>
             </div>
 
             {isOwner && (
-              <div className="space-y-1 bg-muted/40 p-2.5 pt-3 rounded-lg text-xs">
-                <div className="flex justify-between">
-                  <span className="text-text-muted">Total Modal Spare Part:</span>
-                  <span className="font-medium text-text">{rupiah(totalModal)}</span>
+              <div className="rounded-lg bg-primary-soft/40 p-3 my-2 space-y-1 text-xs">
+                <div className="flex justify-between text-text-body">
+                  <span>Total Modal (Owner):</span>
+                  <span>{rupiah(totalModal)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-text-muted">Estimasi Laba Kotor:</span>
-                  <span
-                    className={`font-semibold ${
-                      labaKotor < 0 ? "text-danger" : "text-success"
-                    }`}
-                  >
+                <div className="flex justify-between font-semibold">
+                  <span>Laba Kotor WO:</span>
+                  <span className={labaKotor < 0 ? "text-danger" : "text-success"}>
                     {rupiah(labaKotor)} ({marginPersen.toFixed(1)}%)
                   </span>
                 </div>
               </div>
             )}
 
-            <div className="flex justify-between pt-3">
+            <div className="flex justify-between border-t pt-2 text-sm">
               <span className="text-text-muted">Sudah Dibayar</span>
               <span className="font-semibold text-success">{rupiah(terbayar)}</span>
             </div>
 
-            <div className="flex justify-between pt-3 text-base font-bold">
+            <div className="flex justify-between pt-1 text-base font-bold">
               <span className="text-text">Sisa Tagihan</span>
               <span className={sisa > 0 ? "text-danger" : "text-success"}>
                 {rupiah(sisa)}
@@ -656,6 +798,192 @@ export function KomponenTagihan({
           </div>
         </Card>
       </div>
+
+      {/* Dialog 0: Tambah Item Tagihan (Kepala Mekanik & Owner) */}
+      <Dialog open={dialogTambahItemOpen} onOpenChange={setDialogTambahItemOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Plus className="size-5 text-primary" />
+              Tambah Item ke Tagihan
+            </DialogTitle>
+            <DialogDescription>
+              Pilih suku cadang atau jasa yang ditambahkan selama pengerjaan WO {woNomor}.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            {/* Filter Jenis Item */}
+            <div className="space-y-1">
+              <Label>Jenis Item</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={filterJenisItem === "semua" ? "default" : "outline"}
+                  onClick={() => {
+                    setFilterJenisItem("semua");
+                    setItemIdDipilih("");
+                  }}
+                  className="flex-1 text-xs"
+                >
+                  Semua
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={filterJenisItem === "part" ? "default" : "outline"}
+                  onClick={() => {
+                    setFilterJenisItem("part");
+                    setItemIdDipilih("");
+                  }}
+                  className="flex-1 text-xs gap-1"
+                >
+                  <Package className="size-3.5" />
+                  Spare Part
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={filterJenisItem === "jasa" ? "default" : "outline"}
+                  onClick={() => {
+                    setFilterJenisItem("jasa");
+                    setItemIdDipilih("");
+                  }}
+                  className="flex-1 text-xs gap-1"
+                >
+                  <Wrench className="size-3.5" />
+                  Jasa
+                </Button>
+              </div>
+            </div>
+
+            {/* Dropdown Item Inventory */}
+            <div className="space-y-1">
+              <Label>Pilih Item *</Label>
+              <Select value={itemIdDipilih} onValueChange={setItemIdDipilih}>
+                <SelectTrigger>
+                  <SelectValue placeholder="-- Pilih suku cadang atau jasa --" />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {inventoryTerfilter.map((it) => (
+                    <SelectItem
+                      key={it.id}
+                      value={it.id}
+                      disabled={it.jenis === "part" && it.stok <= 0}
+                    >
+                      {it.nama} ({it.kode}) — {rupiah(it.harga_jual)}
+                      {it.jenis === "part" ? ` [Stok: ${it.stok}]` : " [Jasa]"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Info Item Terpilih */}
+            {selectedInventoryItem && (
+              <div className="rounded-lg border bg-muted/40 p-3 space-y-1.5 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-text-muted">Harga Satuan:</span>
+                  <span className="font-semibold text-text">
+                    {rupiah(selectedInventoryItem.harga_jual)}
+                  </span>
+                </div>
+                {selectedInventoryItem.jenis === "part" && (
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">Stok Tersedia:</span>
+                    <span
+                      className={`font-semibold ${
+                        selectedInventoryItem.stok > 0 ? "text-success" : "text-danger"
+                      }`}
+                    >
+                      {selectedInventoryItem.stok} unit
+                    </span>
+                  </div>
+                )}
+                <div className="flex justify-between border-t pt-1 font-bold text-text">
+                  <span>Subtotal Item:</span>
+                  <span className="text-primary">
+                    {rupiah(selectedInventoryItem.harga_jual * jumlahItem)}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Input Jumlah */}
+            <div className="space-y-1">
+              <Label htmlFor="inputJumlah">Jumlah Item *</Label>
+              <Input
+                id="inputJumlah"
+                type="number"
+                min={1}
+                max={selectedInventoryItem?.jenis === "part" ? selectedInventoryItem.stok : undefined}
+                value={jumlahItem}
+                onChange={(e) => setJumlahItem(Math.max(1, Number(e.target.value)))}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDialogTambahItemOpen(false)}
+              disabled={sedangTambahItem}
+            >
+              Batal
+            </Button>
+            <Button
+              onClick={handleSimpanTambahItem}
+              disabled={sedangTambahItem || !itemIdDipilih}
+              className="bg-primary text-primary-foreground hover:bg-primary-strong"
+            >
+              {sedangTambahItem ? "Menyimpan..." : "Tambah ke Tagihan"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog Hapus Item (Kepala Mekanik & Owner) */}
+      <Dialog open={dialogHapusItemOpen} onOpenChange={setDialogHapusItemOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-danger">
+              <Trash2 className="size-5" />
+              Hapus Item dari Tagihan
+            </DialogTitle>
+            <DialogDescription>
+              Apakah Anda yakin ingin menghapus item{" "}
+              <strong>{itemAkanDihapus?.nama_item}</strong> sebanyak{" "}
+              <strong>{itemAkanDihapus?.jumlah}</strong> dari Work Order ini?
+            </DialogDescription>
+          </DialogHeader>
+
+          {itemAkanDihapus?.jenis === "part" && (
+            <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-warning">
+              <Info className="size-4 inline mr-1" />
+              Stok suku cadang sebanyak <strong>{itemAkanDihapus.jumlah} unit</strong> akan otomatis
+              dikembalikan ke gudang inventory.
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDialogHapusItemOpen(false)}
+              disabled={sedangHapusItem}
+            >
+              Batal
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleKonfirmasiHapusItem}
+              disabled={sedangHapusItem}
+            >
+              {sedangHapusItem ? "Menghapus..." : "Ya, Hapus Item"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Dialog 1: Sesuaikan Harga */}
       <Dialog open={dialogHargaOpen} onOpenChange={setDialogHargaOpen}>
@@ -679,7 +1007,7 @@ export function KomponenTagihan({
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="inputHargaBaru">Harga Dipakai Baru (Rp)</Label>
+              <Label htmlFor="inputHargaBaru">Harga Dipakai Baru (Rp) *</Label>
               <Input
                 id="inputHargaBaru"
                 type="number"
@@ -691,7 +1019,7 @@ export function KomponenTagihan({
             </div>
 
             <div className="space-y-1">
-              <Label>Alasan Penyesuaian</Label>
+              <Label>Alasan Penyesuaian *</Label>
               <Select value={opsiAlasan} onValueChange={setOpsiAlasan}>
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih alasan" />
@@ -713,7 +1041,7 @@ export function KomponenTagihan({
                   id="inputAlasanKustom"
                   value={alasanKustom}
                   onChange={(e) => setAlasanKustom(e.target.value)}
-                  placeholder="Contoh: Kesepakatan khusus dengan Pak Budi"
+                  placeholder="Contoh: Kesepakatan khusus dengan pelanggan"
                 />
               </div>
             )}
@@ -764,7 +1092,7 @@ export function KomponenTagihan({
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="inputAlasanDiskon">Alasan Diskon (Wajib bila ada diskon)</Label>
+              <Label htmlFor="inputAlasanDiskon">Alasan Diskon (Wajib bila diskon &gt; 0)</Label>
               <Input
                 id="inputAlasanDiskon"
                 value={inputAlasanDiskon}
@@ -866,7 +1194,7 @@ export function KomponenTagihan({
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="inputJumlahBayar">Jumlah Pembayaran (Rp)</Label>
+              <Label htmlFor="inputJumlahBayar">Jumlah Pembayaran (Rp) *</Label>
               <Input
                 id="inputJumlahBayar"
                 type="number"

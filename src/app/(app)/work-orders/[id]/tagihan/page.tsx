@@ -53,6 +53,13 @@ export default async function TagihanWorkOrder({
     .eq("work_order_id", id)
     .order("created_at", { ascending: true });
 
+  // 3. Ambil daftar inventory (part & jasa yang aktif) untuk penambahan item oleh Kepala Mekanik / Owner
+  const { data: inventoryData } = await supabase
+    .from("inventory_items")
+    .select("id, kode, jenis, nama, harga_jual, stok")
+    .eq("aktif", true)
+    .order("nama", { ascending: true });
+
   // 3. Jika peran Owner, ambil harga modal dari billing_item_costs (PRD 2.4)
   let modalMap: Record<string, number> = {};
   if (profil.peran === "owner" && billingData && billingData.length > 0) {
@@ -164,6 +171,7 @@ export default async function TagihanWorkOrder({
         items={items}
         invoice={invoice}
         pembayaran={pembayaran}
+        daftarInventory={inventoryData ?? []}
       />
     </div>
   );
