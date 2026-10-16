@@ -23,3 +23,18 @@ export function rupiahRingkas(nilai: number) {
 export function tanggal(iso: string) {
   return fmtTanggal.format(new Date(iso));
 }
+
+const fmtWaktu = new Intl.DateTimeFormat("id-ID", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Asia/Jakarta",
+});
+
+/** "2026-10-07T03:30:00Z" → "7 Okt 2026, 10.30" */
+export function waktu(iso: string) {
+  return fmtWaktu.format(new Date(iso));
+}
+
