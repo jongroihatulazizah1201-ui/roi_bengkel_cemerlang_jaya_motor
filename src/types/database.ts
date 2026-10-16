@@ -767,96 +767,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      laporan_laba: {
+      catat_stok_masuk: {
         Args: {
-          p_dari: string
-          p_sampai: string
+          p_item: string
+          p_jumlah: number
+          p_keterangan?: string | null
         }
-        Returns: {
-          work_order_id: string
-          nomor_wo: string
-          nomor_invoice: string
-          tanggal: string
-          plat: string
-          pendapatan: number
-          modal: number
-          laba: number
-          margin_persen: number
-        }[]
+        Returns: void
       }
-      dashboard_ringkasan: {
+      sesuaikan_stok: {
         Args: {
-          p_dari: string
-          p_sampai: string
+          p_item: string
+          p_stok_fisik: number
+          p_alasan: string
         }
-        Returns: Json
-      }
-      dashboard_pendapatan_harian: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-        }
-        Returns: {
-          tanggal: string
-          pendapatan_jasa: number
-          pendapatan_part: number
-        }[]
-      }
-      dashboard_laba_harian: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-        }
-        Returns: {
-          tanggal: string
-          pendapatan: number
-          modal: number
-          laba: number
-        }[]
-      }
-      dashboard_wo_per_status: {
-        Args: {
-          p_tim?: string | null
-        }
-        Returns: {
-          status: string
-          jumlah: number
-        }[]
-      }
-      dashboard_beban_mekanik: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-          p_tim?: string | null
-        }
-        Returns: {
-          mekanik: string
-          tim: string
-          wo_aktif: number
-          wo_selesai: number
-        }[]
-      }
-      dashboard_wo_selesai_harian: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-        }
-        Returns: {
-          tanggal: string
-          jumlah: number
-        }[]
-      }
-      dashboard_top_item: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-          p_jenis?: string
-        }
-        Returns: {
-          nama: string
-          jumlah: number
-          pendapatan: number
-        }[]
+        Returns: void
       }
     }
     Enums: {
