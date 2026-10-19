@@ -57,7 +57,7 @@ export function DialogStokMasuk({ itemId, namaItem, kodeItem, stokSaatIni }: Pro
       const { error } = await supabase.rpc("catat_stok_masuk", {
         p_item: itemId,
         p_jumlah: data.jumlah,
-        p_keterangan: data.keterangan || null,
+        p_keterangan: data.keterangan || undefined,
       });
 
       if (error) {

@@ -86,7 +86,7 @@ export function HeaderAksiStatus({
       const { error } = await supabase.rpc("ubah_status_wo", {
         p_wo: wo.id,
         p_status: statusTujuan,
-        p_catatan: catatan || null,
+        p_catatan: catatan || undefined,
       });
 
       if (error) throw error;

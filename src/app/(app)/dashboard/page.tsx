@@ -76,14 +76,14 @@ export default async function HalamanDashboard({
   // Panggil RPC secara paralel
   const [resRingkasan, resStatus, resTren, resBeban, resTopItem] = await Promise.allSettled([
     supabase.rpc("dashboard_ringkasan", { p_dari, p_sampai }),
-    supabase.rpc("dashboard_wo_per_status", { p_tim: null }),
+    supabase.rpc("dashboard_wo_per_status", { p_tim: undefined }),
     profil.peran === "owner"
       ? supabase.rpc("dashboard_laba_harian", { p_dari, p_sampai })
       : supabase.rpc("dashboard_pendapatan_harian", { p_dari, p_sampai }),
     supabase.rpc("dashboard_beban_mekanik", {
       p_dari,
       p_sampai,
-      p_tim: profil.peran === "kepala_mekanik" ? profil.id : null,
+      p_tim: profil.peran === "kepala_mekanik" ? profil.id : undefined,
     }),
     supabase.rpc("dashboard_top_item", { p_dari, p_sampai, p_jenis: "part" }),
   ]);

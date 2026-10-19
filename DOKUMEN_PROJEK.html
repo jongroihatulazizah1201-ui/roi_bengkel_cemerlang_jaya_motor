@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokumen Penyerahan Proyek - Bengkel Cemerlang Jaya Motor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1e293b;
+      background: #ffffff;
+      line-height: 1.36;
+      font-size: 10.5px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 7px;
+      margin-bottom: 8px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .logo-badge {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: white;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 2px 5px rgba(2, 132, 199, 0.2);
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .doc-meta {
+      text-align: right;
+    }
+
+    .doc-badge {
+      display: inline-block;
+      padding: 2.5px 7px;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .doc-date {
+      font-size: 9.5px;
+      color: #64748b;
+      margin-top: 1px;
+    }
+
+    /* Section Cards */
+    .section {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 7px;
+      padding: 8px 11px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .section-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .icon-netlify { background: #ecfeff; color: #0891b2; }
+    .icon-creds { background: #fef3c7; color: #b45309; }
+    .icon-repo { background: #f3e8ff; color: #7e22ce; }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+    }
+
+    /* URL Box */
+    .url-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 5px 9px;
+      margin-bottom: 5px;
+    }
+
+    .url-label {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .url-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #0284c7;
+      text-decoration: none;
+    }
+
+    .url-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1.5px 6px;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #15803d;
+      white-space: nowrap;
+    }
+
+    /* Tables */
+    .table-container {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 3px;
+      font-size: 10px;
+    }
+
+    .table-container th {
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+      font-size: 9.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 5px 7px;
+      text-align: left;
+      border-bottom: 1.5px solid #cbd5e1;
+    }
+
+    .table-container td {
+      padding: 4.5px 7px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .table-container tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-container tr:nth-child(even) {
+      background: #fbfcfe;
+    }
+
+    .mono-code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 9.5px;
+      border: 1px solid #e2e8f0;
+      font-weight: 600;
+    }
+
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 2.5px;
+      padding: 1.5px 5px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .role-owner { background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe; }
+    .role-admin { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .role-mekanik { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+
+    /* Grid for Repos */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .mini-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 5px 8px;
+    }
+
+    .mini-card-title {
+      font-size: 9px;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 1.5px;
+    }
+
+    .note-box {
+      margin-top: 5px;
+      background: #fffbeb;
+      border-left: 2.5px solid #f59e0b;
+      padding: 4px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 9px;
+      color: #92400e;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Header -->
+    <div class="header">
+      <div class="header-brand">
+        <div class="logo-badge">🔧</div>
+        <div>
+          <div class="brand-title">Bengkel Cemerlang Jaya Motor</div>
+          <div class="brand-subtitle">Aplikasi Web Manajemen Bengkel Motor & Operasional Terpadu &bull; Sesi 9</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div class="doc-badge">Dokumen Informasi & Kredensial</div>
+        <div class="doc-date">Tanggal Rilis: 17 Oktober 2026</div>
+      </div>
+    </div>
+
+    <!-- 1. LINK NETLIFY -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-netlify">🌐</div>
+        <div class="section-title">1. Link Netlify (Deployment URL)</div>
+      </div>
+
+      <div class="url-box">
+        <div>
+          <div class="url-label">Production / Preview Live URL (Netlify):</div>
+          <a href="https://tim-3-bengkel-cemerlang-jaya-motor.netlify.app" class="url-link" target="_blank">
+            https://tim-3-bengkel-cemerlang-jaya-motor.netlify.app
+          </a>
+        </div>
+        <span class="url-tag">Live / CI/CD</span>
+      </div>
+
+      <div class="url-box" style="margin-bottom: 3px;">
+        <div>
+          <div class="url-label">Local Development Server URL:</div>
+          <span class="url-link" style="color: #475569;">http://localhost:3000</span>
+        </div>
+        <span class="url-tag" style="background: #f1f5f9; color: #475569;">Dev Server</span>
+      </div>
+
+      <div class="note-box">
+        💡 <strong>Catatan:</strong> Build otomatis terkonfigurasi pada <span class="mono-code">netlify.toml</span>. Setiap branch yang digabung ke branch utama <span class="mono-code">main</span> atau Pull Request aktif otomatis terhubung ke preview Netlify.
+      </div>
+    </div>
+
+    <!-- 2. KREDENSIAL LOGIN -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-creds">🔑</div>
+        <div class="section-title">2. Kredensial Login Akun Uji (PRD 15.1)</div>
+      </div>
+
+      <table class="table-container">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Pengguna</th>
+            <th style="width: 17%;">Peran (Role)</th>
+            <th style="width: 25%;">Email Login</th>
+            <th style="width: 14%;">Kata Sandi</th>
+            <th style="width: 29%;">Hak Akses Utama</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Pak Darto</strong></td>
+            <td><span class="role-badge role-owner">👑 Owner</span></td>
+            <td><span class="mono-code">owner@cemerlangjaya.test</span></td>
+            <td><span class="mono-code">Bengkel123!</span></td>
+            <td>Akses penuh: Dashboard Finansial, Laporan Laba Kotor, Audit Log, Modal Part, Kelola User.</td>
+          </tr>
+          <tr>
+            <td><strong>Rina</strong></td>
+            <td><span class="role-badge role-admin">💼 Admin</span></td>
+            <td><span class="mono-code">admin@cemerlangjaya.test</span></td>
+            <td><span class="mono-code">Bengkel123!</span></td>
+            <td>Registrasi pelanggan/kendaraan, buat Work Order (WO), terbitkan Invoice, catat bayar.</td>
+          </tr>
+          <tr>
+            <td><strong>Pak Joko</strong></td>
+            <td><span class="role-badge role-mekanik">🔧 Kepala Mekanik</span></td>
+            <td><span class="mono-code">joko@cemerlangjaya.test</span></td>
+            <td><span class="mono-code">Bengkel123!</span></td>
+            <td><strong>Tim A</strong>: Kelola WO Tim A, catat pemakaian sparepart & jasa servis, verifikasi QC.</td>
+          </tr>
+          <tr>
+            <td><strong>Pak Slamet</strong></td>
+            <td><span class="role-badge role-mekanik">🔧 Kepala Mekanik</span></td>
+            <td><span class="mono-code">slamet@cemerlangjaya.test</span></td>
+            <td><span class="mono-code">Bengkel123!</span></td>
+            <td><strong>Tim B</strong>: Kelola WO Tim B, catat pemakaian sparepart & jasa servis, verifikasi QC.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note-box">
+        ⚠️ <strong>Info Uji:</strong> Password seluruh akun uji adalah <span class="mono-code">Bengkel123!</span>. Akses halaman diatur ketat via Supabase RLS & middleware Next.js.
+      </div>
+    </div>
+
+    <!-- 3. REPOSITORY PROJEK -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-repo">📂</div>
+        <div class="section-title">3. Repositori Proyek (GitHub)</div>
+      </div>
+
+      <div class="url-box">
+        <div>
+          <div class="url-label">GitHub Repository URL:</div>
+          <a href="https://github.com/rinanta/tim-3-Bengkel-Cemerlang-Jaya-Motor" class="url-link" target="_blank">
+            https://github.com/rinanta/tim-3-Bengkel-Cemerlang-Jaya-Motor
+          </a>
+        </div>
+        <span class="url-tag" style="background: #f3e8ff; color: #7e22ce;">GitHub Main Repo</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="mini-card">
+          <div class="mini-card-title">Git Clone Command (HTTPS):</div>
+          <div class="mono-code" style="word-break: break-all; font-size: 9px;">
+            git clone https://github.com/rinanta/tim-3-Bengkel-Cemerlang-Jaya-Motor.git
+          </div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-title">Struktur Branch Utama:</div>
+          <div style="font-size: 9px; color: #334155; line-height: 1.35;">
+            • <strong>main</strong> : Cabang rilis / integrasi bersama tim<br>
+            • <strong>fitur/dashboard</strong> : Fitur D (Dashboard, Audit Log, Laporan Laba)
+          </div>
+        </div>
+      </div>
+
+      <table class="table-container" style="margin-top: 5px;">
+        <thead>
+          <tr>
+            <th>Modul Fitur</th>
+            <th>Halaman Aplikasi</th>
+            <th>Branch Fitur</th>
+            <th>Status Integrasi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Fitur A: Work Order</strong></td>
+            <td><span class="mono-code">/work-orders</span>, <span class="mono-code">/work-orders/baru</span></td>
+            <td><span class="mono-code">fitur/work-order</span></td>
+            <td><span class="url-tag">Merged ke main</span></td>
+          </tr>
+          <tr>
+            <td><strong>Fitur B: Tagihan & Invoice</strong></td>
+            <td><span class="mono-code">/work-orders/[id]/tagihan</span>, <span class="mono-code">/invoice</span></td>
+            <td><span class="mono-code">fitur/tagihan</span></td>
+            <td><span class="url-tag">Merged ke main</span></td>
+          </tr>
+          <tr>
+            <td><strong>Fitur C: Inventory & User</strong></td>
+            <td><span class="mono-code">/inventory</span>, <span class="mono-code">/pengguna</span>, <span class="mono-code">/setelan</span></td>
+            <td><span class="mono-code">fitur/inventory</span></td>
+            <td><span class="url-tag">Merged ke main</span></td>
+          </tr>
+          <tr>
+            <td><strong>Fitur D: Dashboard & Audit</strong></td>
+            <td><span class="mono-code">/dashboard</span>, <span class="mono-code">/audit-log</span>, <span class="mono-code">/laporan-laba</span></td>
+            <td><span class="mono-code">fitur/dashboard</span></td>
+            <td><span class="url-tag">Merged ke main</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div>Dokumen Penyerahan Proyek &bull; Bengkel Cemerlang Jaya Motor &bull; Tim 3</div>
+      <div>Bootcamp AI Web Programming &bull; Next.js 15, Tailwind, Supabase</div>
+    </div>
+
+  </div>
+</body>
+</html>

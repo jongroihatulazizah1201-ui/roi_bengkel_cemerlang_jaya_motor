@@ -12,10 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { rupiah, tanggal } from "@/lib/format";
+import { rupiah, tanggal, waktu } from "@/lib/format";
 import { ambilProfilSaya } from "@/lib/profil";
 import { createClient } from "@/lib/supabase/server";
 import { TombolCetak } from "./CetakInvoice";
+import { TombolBayarOnline } from "./TombolBayarOnline";
 
 export default async function HalamanInvoice({
   params,
@@ -63,7 +64,8 @@ export default async function HalamanInvoice({
   const { data: invoice } = await supabase
     .from("invoices")
     .select(`
-      id, nomor, subtotal, diskon, total, terbayar, status_bayar, diterbitkan_at
+      id, nomor, subtotal, diskon, total, terbayar, status_bayar, diterbitkan_at,
+      mayar_link, mayar_jumlah, dibayar_online_at
     `)
     .eq("work_order_id", id)
     .maybeSingle();
@@ -117,13 +119,21 @@ export default async function HalamanInvoice({
 
   return (
     <div className="space-y-6">
-      {/* Baris Tombol Aksi (Print & Navigasi) */}
+      {/* Baris Tombol Aksi (Print & Navigasi & Bayar Online) */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Invoice {invoice.nomor}</h1>
           <p className="text-xs text-text-muted">Siap dicetak dalam format A4</p>
         </div>
-        <TombolCetak woId={id} />
+        <div className="flex flex-wrap items-center gap-3">
+          <TombolBayarOnline
+            invoiceId={invoice.id}
+            statusBayarAwal={invoice.status_bayar}
+            dibayarOnlineAtAwal={invoice.dibayar_online_at}
+            bisaBayar={profil.peran === "admin" || profil.peran === "owner"}
+          />
+          <TombolCetak woId={id} />
+        </div>
       </div>
 
       {/* Lembar Invoice A4 Siap Cetak */}
@@ -150,7 +160,7 @@ export default async function HalamanInvoice({
             <p className="text-xs text-neutral-500">
               Tanggal: {tanggal(invoice.diterbitkan_at)}
             </p>
-            <div className="mt-2">
+            <div className="mt-2 space-y-1">
               <Badge
                 variant="outline"
                 className={`text-xs uppercase font-bold ${
@@ -167,6 +177,11 @@ export default async function HalamanInvoice({
                     ? "DIBAYAR SEBAGIAN"
                     : "BELUM BAYAR"}
               </Badge>
+              {invoice.status_bayar === "lunas" && invoice.dibayar_online_at && (
+                <p className="text-[11px] font-medium text-green-700">
+                  Dibayar: {waktu(invoice.dibayar_online_at)}
+                </p>
+              )}
             </div>
           </div>
         </div>

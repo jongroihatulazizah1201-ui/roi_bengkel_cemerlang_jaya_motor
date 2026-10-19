@@ -10,46 +10,46 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
+    PostgrestVersion: "14.18"
   }
   public: {
     Tables: {
       audit_logs: {
         Row: {
+          aksi: string
+          alasan: string | null
+          data_id: string | null
           id: number
-          waktu: string
           pelaku_id: string | null
           pelaku_peran: string | null
-          aksi: string
-          tabel: string
-          data_id: string | null
           sebelum: Json | null
           sesudah: Json | null
-          alasan: string | null
+          tabel: string
+          waktu: string
         }
         Insert: {
+          aksi: string
+          alasan?: string | null
+          data_id?: string | null
           id?: never
-          waktu?: string
           pelaku_id?: string | null
           pelaku_peran?: string | null
-          aksi: string
-          tabel: string
-          data_id?: string | null
           sebelum?: Json | null
           sesudah?: Json | null
-          alasan?: string | null
+          tabel: string
+          waktu?: string
         }
         Update: {
+          aksi?: string
+          alasan?: string | null
+          data_id?: string | null
           id?: never
-          waktu?: string
           pelaku_id?: string | null
           pelaku_peran?: string | null
-          aksi?: string
-          tabel?: string
-          data_id?: string | null
           sebelum?: Json | null
           sesudah?: Json | null
-          alasan?: string | null
+          tabel?: string
+          waktu?: string
         }
         Relationships: []
       }
@@ -78,49 +78,49 @@ export type Database = {
       }
       billing_items: {
         Row: {
+          alasan_penyesuaian: string | null
+          created_at: string
+          disesuaikan_at: string | null
+          disesuaikan_oleh: string | null
+          ditambah_oleh: string | null
+          harga_dipakai: number
+          harga_master: number
           id: string
-          work_order_id: string
           item_id: string
-          nama_item: string
           jenis: string
           jumlah: number
-          harga_master: number
-          harga_dipakai: number
-          alasan_penyesuaian: string | null
-          disesuaikan_oleh: string | null
-          disesuaikan_at: string | null
-          ditambah_oleh: string | null
-          created_at: string
+          nama_item: string
+          work_order_id: string
         }
         Insert: {
+          alasan_penyesuaian?: string | null
+          created_at?: string
+          disesuaikan_at?: string | null
+          disesuaikan_oleh?: string | null
+          ditambah_oleh?: string | null
+          harga_dipakai: number
+          harga_master: number
           id?: string
-          work_order_id: string
           item_id: string
-          nama_item: string
           jenis: string
           jumlah: number
-          harga_master: number
-          harga_dipakai: number
-          alasan_penyesuaian?: string | null
-          disesuaikan_oleh?: string | null
-          disesuaikan_at?: string | null
-          ditambah_oleh?: string | null
-          created_at?: string
+          nama_item: string
+          work_order_id: string
         }
         Update: {
+          alasan_penyesuaian?: string | null
+          created_at?: string
+          disesuaikan_at?: string | null
+          disesuaikan_oleh?: string | null
+          ditambah_oleh?: string | null
+          harga_dipakai?: number
+          harga_master?: number
           id?: string
-          work_order_id?: string
           item_id?: string
-          nama_item?: string
           jenis?: string
           jumlah?: number
-          harga_master?: number
-          harga_dipakai?: number
-          alasan_penyesuaian?: string | null
-          disesuaikan_oleh?: string | null
-          disesuaikan_at?: string | null
-          ditambah_oleh?: string | null
-          created_at?: string
+          nama_item?: string
+          work_order_id?: string
         }
         Relationships: [
           {
@@ -155,48 +155,48 @@ export type Database = {
       }
       customers: {
         Row: {
-          id: string
-          tipe: string
-          nama: string
-          telepon: string
-          email: string | null
           alamat: string | null
           created_at: string
-        }
-        Insert: {
-          id?: string
-          tipe?: string
+          email: string | null
+          id: string
           nama: string
           telepon: string
-          email?: string | null
+          tipe: string
+        }
+        Insert: {
           alamat?: string | null
           created_at?: string
+          email?: string | null
+          id?: string
+          nama: string
+          telepon: string
+          tipe?: string
         }
         Update: {
-          id?: string
-          tipe?: string
-          nama?: string
-          telepon?: string
-          email?: string | null
           alamat?: string | null
           created_at?: string
+          email?: string | null
+          id?: string
+          nama?: string
+          telepon?: string
+          tipe?: string
         }
         Relationships: []
       }
       inventory_costs: {
         Row: {
-          item_id: string
           harga_modal: number
+          item_id: string
           updated_at: string
         }
         Insert: {
-          item_id: string
           harga_modal: number
+          item_id: string
           updated_at?: string
         }
         Update: {
-          item_id?: string
           harga_modal?: number
+          item_id?: string
           updated_at?: string
         }
         Relationships: [
@@ -211,79 +211,91 @@ export type Database = {
       }
       inventory_items: {
         Row: {
-          id: string
-          kode: string
-          jenis: string
-          nama: string
-          harga_jual: number
-          stok: number
-          stok_minimum: number
           aktif: boolean
           created_at: string
+          harga_jual: number
+          id: string
+          jenis: string
+          kode: string
+          nama: string
+          stok: number
+          stok_minimum: number
           updated_at: string
         }
         Insert: {
-          id?: string
-          kode: string
-          jenis: string
-          nama: string
-          harga_jual: number
-          stok?: number
-          stok_minimum?: number
           aktif?: boolean
           created_at?: string
+          harga_jual: number
+          id?: string
+          jenis: string
+          kode: string
+          nama: string
+          stok?: number
+          stok_minimum?: number
           updated_at?: string
         }
         Update: {
-          id?: string
-          kode?: string
-          jenis?: string
-          nama?: string
-          harga_jual?: number
-          stok?: number
-          stok_minimum?: number
           aktif?: boolean
           created_at?: string
+          harga_jual?: number
+          id?: string
+          jenis?: string
+          kode?: string
+          nama?: string
+          stok?: number
+          stok_minimum?: number
           updated_at?: string
         }
         Relationships: []
       }
       invoices: {
         Row: {
-          id: string
-          work_order_id: string
-          nomor: string
-          subtotal: number
+          dibayar_online_at: string | null
           diskon: number
-          total: number
-          terbayar: number
-          status_bayar: string
-          diterbitkan_oleh: string | null
           diterbitkan_at: string
+          diterbitkan_oleh: string | null
+          id: string
+          mayar_invoice_id: string | null
+          mayar_jumlah: number | null
+          mayar_link: string | null
+          nomor: string
+          status_bayar: string
+          subtotal: number
+          terbayar: number
+          total: number
+          work_order_id: string
         }
         Insert: {
-          id?: string
-          work_order_id: string
-          nomor: string
-          subtotal: number
+          dibayar_online_at?: string | null
           diskon?: number
-          total: number
-          terbayar?: number
-          status_bayar?: string
-          diterbitkan_oleh?: string | null
           diterbitkan_at?: string
+          diterbitkan_oleh?: string | null
+          id?: string
+          mayar_invoice_id?: string | null
+          mayar_jumlah?: number | null
+          mayar_link?: string | null
+          nomor: string
+          status_bayar?: string
+          subtotal: number
+          terbayar?: number
+          total: number
+          work_order_id: string
         }
         Update: {
-          id?: string
-          work_order_id?: string
-          nomor?: string
-          subtotal?: number
+          dibayar_online_at?: string | null
           diskon?: number
-          total?: number
-          terbayar?: number
-          status_bayar?: string
-          diterbitkan_oleh?: string | null
           diterbitkan_at?: string
+          diterbitkan_oleh?: string | null
+          id?: string
+          mayar_invoice_id?: string | null
+          mayar_jumlah?: number | null
+          mayar_link?: string | null
+          nomor?: string
+          status_bayar?: string
+          subtotal?: number
+          terbayar?: number
+          total?: number
+          work_order_id?: string
         }
         Relationships: [
           {
@@ -302,27 +314,51 @@ export type Database = {
           },
         ]
       }
-      mekanik: {
+      mayar_webhook_log: {
         Row: {
-          id: string
-          nama: string
-          kepala_mekanik_id: string
-          aktif: boolean
           created_at: string
+          event: string | null
+          id: number
+          payload: Json | null
+          status: string | null
         }
         Insert: {
-          id?: string
-          nama: string
-          kepala_mekanik_id: string
-          aktif?: boolean
           created_at?: string
+          event?: string | null
+          id?: never
+          payload?: Json | null
+          status?: string | null
         }
         Update: {
-          id?: string
-          nama?: string
-          kepala_mekanik_id?: string
+          created_at?: string
+          event?: string | null
+          id?: never
+          payload?: Json | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      mekanik: {
+        Row: {
+          aktif: boolean
+          created_at: string
+          id: string
+          kepala_mekanik_id: string
+          nama: string
+        }
+        Insert: {
           aktif?: boolean
           created_at?: string
+          id?: string
+          kepala_mekanik_id: string
+          nama: string
+        }
+        Update: {
+          aktif?: boolean
+          created_at?: string
+          id?: string
+          kepala_mekanik_id?: string
+          nama?: string
         }
         Relationships: [
           {
@@ -354,28 +390,28 @@ export type Database = {
       }
       payments: {
         Row: {
+          created_at: string
+          dicatat_oleh: string | null
           id: string
           invoice_id: string
-          metode: string
           jumlah: number
-          dicatat_oleh: string | null
-          created_at: string
+          metode: string
         }
         Insert: {
+          created_at?: string
+          dicatat_oleh?: string | null
           id?: string
           invoice_id: string
-          metode: string
           jumlah: number
-          dicatat_oleh?: string | null
-          created_at?: string
+          metode: string
         }
         Update: {
+          created_at?: string
+          dicatat_oleh?: string | null
           id?: string
           invoice_id?: string
-          metode?: string
           jumlah?: number
-          dicatat_oleh?: string | null
-          created_at?: string
+          metode?: string
         }
         Relationships: [
           {
@@ -396,64 +432,64 @@ export type Database = {
       }
       profiles: {
         Row: {
-          id: string
-          nama: string
-          email: string
-          role: string
           aktif: boolean
           created_at: string
-        }
-        Insert: {
+          email: string
           id: string
           nama: string
-          email: string
-          role?: string
+          role: string
+        }
+        Insert: {
           aktif?: boolean
           created_at?: string
+          email: string
+          id: string
+          nama: string
+          role?: string
         }
         Update: {
-          id?: string
-          nama?: string
-          email?: string
-          role?: string
           aktif?: boolean
           created_at?: string
+          email?: string
+          id?: string
+          nama?: string
+          role?: string
         }
         Relationships: []
       }
       stock_movements: {
         Row: {
+          created_at: string
+          dicatat_oleh: string | null
           id: number
           item_id: string
           jenis: string
           jumlah: number
-          stok_sesudah: number
           keterangan: string | null
+          stok_sesudah: number
           work_order_id: string | null
-          dicatat_oleh: string | null
-          created_at: string
         }
         Insert: {
+          created_at?: string
+          dicatat_oleh?: string | null
           id?: never
           item_id: string
           jenis: string
           jumlah: number
-          stok_sesudah: number
           keterangan?: string | null
+          stok_sesudah: number
           work_order_id?: string | null
-          dicatat_oleh?: string | null
-          created_at?: string
         }
         Update: {
+          created_at?: string
+          dicatat_oleh?: string | null
           id?: never
           item_id?: string
           jenis?: string
           jumlah?: number
-          stok_sesudah?: number
           keterangan?: string | null
+          stok_sesudah?: number
           work_order_id?: string | null
-          dicatat_oleh?: string | null
-          created_at?: string
         }
         Relationships: [
           {
@@ -479,36 +515,51 @@ export type Database = {
           },
         ]
       }
-      vehicles: {
+      tes_koneksi: {
         Row: {
-          id: string
-          customer_id: string
-          plat: string
-          merek_model: string
-          tahun: number | null
-          warna: string | null
-          transmisi: string | null
-          created_at: string
+          catatan: string
+          id: number
         }
         Insert: {
-          id?: string
-          customer_id: string
-          plat: string
-          merek_model: string
-          tahun?: number | null
-          warna?: string | null
-          transmisi?: string | null
-          created_at?: string
+          catatan: string
+          id?: number
         }
         Update: {
-          id?: string
-          customer_id?: string
-          plat?: string
-          merek_model?: string
-          tahun?: number | null
-          warna?: string | null
-          transmisi?: string | null
+          catatan?: string
+          id?: number
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          created_at: string
+          customer_id: string
+          id: string
+          merek_model: string
+          plat: string
+          tahun: number | null
+          transmisi: string | null
+          warna: string | null
+        }
+        Insert: {
           created_at?: string
+          customer_id: string
+          id?: string
+          merek_model: string
+          plat: string
+          tahun?: number | null
+          transmisi?: string | null
+          warna?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          id?: string
+          merek_model?: string
+          plat?: string
+          tahun?: number | null
+          transmisi?: string | null
+          warna?: string | null
         }
         Relationships: [
           {
@@ -522,31 +573,31 @@ export type Database = {
       }
       wo_status_history: {
         Row: {
-          id: number
-          work_order_id: string
-          dari_status: string | null
-          ke_status: string
           catatan: string | null
-          oleh: string | null
           created_at: string
+          dari_status: string | null
+          id: number
+          ke_status: string
+          oleh: string | null
+          work_order_id: string
         }
         Insert: {
-          id?: never
-          work_order_id: string
-          dari_status?: string | null
-          ke_status: string
           catatan?: string | null
-          oleh?: string | null
           created_at?: string
+          dari_status?: string | null
+          id?: never
+          ke_status: string
+          oleh?: string | null
+          work_order_id: string
         }
         Update: {
-          id?: never
-          work_order_id?: string
-          dari_status?: string | null
-          ke_status?: string
           catatan?: string | null
-          oleh?: string | null
           created_at?: string
+          dari_status?: string | null
+          id?: never
+          ke_status?: string
+          oleh?: string | null
+          work_order_id?: string
         }
         Relationships: [
           {
@@ -567,16 +618,16 @@ export type Database = {
       }
       work_order_mekanik: {
         Row: {
-          work_order_id: string
           mekanik_id: string
+          work_order_id: string
         }
         Insert: {
-          work_order_id: string
           mekanik_id: string
+          work_order_id: string
         }
         Update: {
-          work_order_id?: string
           mekanik_id?: string
+          work_order_id?: string
         }
         Relationships: [
           {
@@ -597,28 +648,28 @@ export type Database = {
       }
       work_order_photos: {
         Row: {
+          created_at: string
+          diunggah_oleh: string | null
           id: string
-          work_order_id: string
           jenis: string
           path: string
-          diunggah_oleh: string | null
-          created_at: string
+          work_order_id: string
         }
         Insert: {
+          created_at?: string
+          diunggah_oleh?: string | null
           id?: string
-          work_order_id: string
           jenis: string
           path: string
-          diunggah_oleh?: string | null
-          created_at?: string
+          work_order_id: string
         }
         Update: {
+          created_at?: string
+          diunggah_oleh?: string | null
           id?: string
-          work_order_id?: string
           jenis?: string
           path?: string
-          diunggah_oleh?: string | null
-          created_at?: string
+          work_order_id?: string
         }
         Relationships: [
           {
@@ -639,64 +690,64 @@ export type Database = {
       }
       work_orders: {
         Row: {
-          id: string
-          nomor: string
-          vehicle_id: string
-          customer_id: string
-          kepala_mekanik_id: string
-          odometer: number
-          keluhan: string
-          diagnosis: string | null
-          status: string
-          estimasi_selesai: string | null
-          catatan_status: string | null
-          diskon: number
           alasan_diskon: string | null
-          selesai_at: string | null
+          catatan_status: string | null
+          created_at: string
+          customer_id: string
+          diagnosis: string | null
           diambil_at: string | null
           dibuat_oleh: string | null
-          created_at: string
+          diskon: number
+          estimasi_selesai: string | null
+          id: string
+          keluhan: string
+          kepala_mekanik_id: string
+          nomor: string
+          odometer: number
+          selesai_at: string | null
+          status: string
           updated_at: string
+          vehicle_id: string
         }
         Insert: {
-          id?: string
-          nomor: string
-          vehicle_id: string
-          customer_id: string
-          kepala_mekanik_id: string
-          odometer: number
-          keluhan: string
-          diagnosis?: string | null
-          status?: string
-          estimasi_selesai?: string | null
-          catatan_status?: string | null
-          diskon?: number
           alasan_diskon?: string | null
-          selesai_at?: string | null
+          catatan_status?: string | null
+          created_at?: string
+          customer_id: string
+          diagnosis?: string | null
           diambil_at?: string | null
           dibuat_oleh?: string | null
-          created_at?: string
+          diskon?: number
+          estimasi_selesai?: string | null
+          id?: string
+          keluhan: string
+          kepala_mekanik_id: string
+          nomor: string
+          odometer: number
+          selesai_at?: string | null
+          status?: string
           updated_at?: string
+          vehicle_id: string
         }
         Update: {
-          id?: string
-          nomor?: string
-          vehicle_id?: string
-          customer_id?: string
-          kepala_mekanik_id?: string
-          odometer?: number
-          keluhan?: string
-          diagnosis?: string | null
-          status?: string
-          estimasi_selesai?: string | null
-          catatan_status?: string | null
-          diskon?: number
           alasan_diskon?: string | null
-          selesai_at?: string | null
+          catatan_status?: string | null
+          created_at?: string
+          customer_id?: string
+          diagnosis?: string | null
           diambil_at?: string | null
           dibuat_oleh?: string | null
-          created_at?: string
+          diskon?: number
+          estimasi_selesai?: string | null
+          id?: string
+          keluhan?: string
+          kepala_mekanik_id?: string
+          nomor?: string
+          odometer?: number
+          selesai_at?: string | null
+          status?: string
           updated_at?: string
+          vehicle_id?: string
         }
         Relationships: [
           {
@@ -731,33 +782,33 @@ export type Database = {
       }
       workshop_settings: {
         Row: {
-          id: number
-          nama: string
           alamat: string
-          telepon: string
+          galeri_paths: string[]
+          id: number
           jam_buka: string | null
           logo_path: string | null
-          galeri_paths: string[]
+          nama: string
+          telepon: string
           updated_at: string
         }
         Insert: {
-          id?: number
-          nama?: string
           alamat?: string
-          telepon?: string
+          galeri_paths?: string[]
+          id?: number
           jam_buka?: string | null
           logo_path?: string | null
-          galeri_paths?: string[]
+          nama?: string
+          telepon?: string
           updated_at?: string
         }
         Update: {
-          id?: number
-          nama?: string
           alamat?: string
-          telepon?: string
+          galeri_paths?: string[]
+          id?: number
           jam_buka?: string | null
           logo_path?: string | null
-          galeri_paths?: string[]
+          nama?: string
+          telepon?: string
           updated_at?: string
         }
         Relationships: []
@@ -767,136 +818,39 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      atur_diskon: {
+        Args: { p_alasan: string; p_diskon: number; p_wo: string }
+        Returns: undefined
+      }
       buat_work_order: {
         Args: {
-          p_vehicle_id: string
+          p_keluhan: string
           p_kepala_mekanik_id: string
           p_odometer: number
-          p_keluhan: string
+          p_vehicle_id: string
         }
         Returns: string
       }
-      tugaskan_mekanik: {
+      catat_mayar_webhook: {
         Args: {
-          p_wo: string
-          p_mekanik: string[]
-          p_estimasi: string
-        }
-        Returns: undefined
-      }
-      ubah_status_wo: {
-        Args: {
-          p_wo: string
+          p_event: string
+          p_invoice_id?: string
+          p_jumlah?: number
+          p_payload: Json
           p_status: string
-          p_catatan?: string | null
         }
         Returns: undefined
-      }
-      tambah_item_tagihan: {
-        Args: {
-          p_wo: string
-          p_item: string
-          p_jumlah: number
-        }
-        Returns: string
-      }
-      hapus_item_tagihan: {
-        Args: {
-          p_billing_item: string
-        }
-        Returns: undefined
-      }
-      sesuaikan_harga_item: {
-        Args: {
-          p_billing_item: string
-          p_harga: number
-          p_alasan: string
-        }
-        Returns: boolean
-      }
-      atur_diskon: {
-        Args: {
-          p_wo: string
-          p_diskon: number
-          p_alasan: string
-        }
-        Returns: undefined
-      }
-      terbitkan_invoice: {
-        Args: {
-          p_wo: string
-        }
-        Returns: string
       }
       catat_pembayaran: {
-        Args: {
-          p_invoice: string
-          p_metode: string
-          p_jumlah: number
-        }
+        Args: { p_invoice: string; p_jumlah: number; p_metode: string }
         Returns: undefined
       }
       catat_stok_masuk: {
-        Args: {
-          p_item: string
-          p_jumlah: number
-          p_keterangan?: string | null
-        }
+        Args: { p_item: string; p_jumlah: number; p_keterangan?: string }
         Returns: undefined
-      }
-      sesuaikan_stok: {
-        Args: {
-          p_item: string
-          p_stok_fisik: number
-          p_alasan: string
-        }
-        Returns: undefined
-      }
-      dashboard_ringkasan: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-        }
-        Returns: Json
-      }
-      dashboard_pendapatan_harian: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-        }
-        Returns: {
-          tanggal: string
-          pendapatan_jasa: number
-          pendapatan_part: number
-        }[]
-      }
-      dashboard_laba_harian: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-        }
-        Returns: {
-          tanggal: string
-          pendapatan: number
-          modal: number
-          laba: number
-        }[]
-      }
-      dashboard_wo_per_status: {
-        Args: {
-          p_tim?: string | null
-        }
-        Returns: {
-          status: string
-          jumlah: number
-        }[]
       }
       dashboard_beban_mekanik: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-          p_tim?: string | null
-        }
+        Args: { p_dari: string; p_sampai: string; p_tim?: string }
         Returns: {
           mekanik: string
           tim: string
@@ -904,44 +858,105 @@ export type Database = {
           wo_selesai: number
         }[]
       }
-      dashboard_wo_selesai_harian: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-        }
+      dashboard_laba_harian: {
+        Args: { p_dari: string; p_sampai: string }
         Returns: {
+          laba: number
+          modal: number
+          pendapatan: number
           tanggal: string
-          jumlah: number
         }[]
+      }
+      dashboard_pendapatan_harian: {
+        Args: { p_dari: string; p_sampai: string }
+        Returns: {
+          pendapatan_jasa: number
+          pendapatan_part: number
+          tanggal: string
+        }[]
+      }
+      dashboard_ringkasan: {
+        Args: { p_dari: string; p_sampai: string }
+        Returns: Json
       }
       dashboard_top_item: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-          p_jenis?: string
-        }
+        Args: { p_dari: string; p_jenis?: string; p_sampai: string }
         Returns: {
-          nama: string
           jumlah: number
+          nama: string
           pendapatan: number
         }[]
       }
-      laporan_laba: {
-        Args: {
-          p_dari: string
-          p_sampai: string
-        }
+      dashboard_wo_per_status: {
+        Args: { p_tim?: string }
         Returns: {
-          work_order_id: string
-          nomor_wo: string
-          nomor_invoice: string
+          jumlah: number
+          status: string
+        }[]
+      }
+      dashboard_wo_selesai_harian: {
+        Args: { p_dari: string; p_sampai: string }
+        Returns: {
+          jumlah: number
           tanggal: string
-          plat: string
-          pendapatan: number
-          modal: number
+        }[]
+      }
+      hapus_item_tagihan: {
+        Args: { p_billing_item: string }
+        Returns: undefined
+      }
+      laporan_laba: {
+        Args: { p_dari: string; p_sampai: string }
+        Returns: {
           laba: number
           margin_persen: number
+          modal: number
+          nomor_invoice: string
+          nomor_wo: string
+          pendapatan: number
+          plat: string
+          tanggal: string
+          work_order_id: string
         }[]
+      }
+      sesuaikan_harga_item: {
+        Args: { p_alasan: string; p_billing_item: string; p_harga: number }
+        Returns: boolean
+      }
+      sesuaikan_stok: {
+        Args: { p_alasan: string; p_item: string; p_stok_fisik: number }
+        Returns: undefined
+      }
+      simpan_link_mayar: {
+        Args: {
+          p_invoice_id: string
+          p_mayar_invoice_id: string
+          p_mayar_jumlah: number
+          p_mayar_link: string
+        }
+        Returns: undefined
+      }
+      tambah_item_tagihan: {
+        Args: { p_item: string; p_jumlah: number; p_wo: string }
+        Returns: string
+      }
+      tandai_lunas_mayar: {
+        Args: {
+          p_event?: string
+          p_invoice_id: string
+          p_payload?: Json
+          p_status?: string
+        }
+        Returns: undefined
+      }
+      terbitkan_invoice: { Args: { p_wo: string }; Returns: string }
+      tugaskan_mekanik: {
+        Args: { p_estimasi: string; p_mekanik: string[]; p_wo: string }
+        Returns: undefined
+      }
+      ubah_status_wo: {
+        Args: { p_catatan?: string; p_status: string; p_wo: string }
+        Returns: undefined
       }
     }
     Enums: {
@@ -961,12 +976,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -990,11 +1005,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1015,11 +1030,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1036,9 +1051,37 @@ export type TablesUpdate<
       : never
     : never
 
-export const Constants = {
-  public: {
-    Enums: {},
-  },
-} as const
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
 
