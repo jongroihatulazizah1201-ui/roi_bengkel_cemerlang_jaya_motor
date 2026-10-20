@@ -113,20 +113,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Bila invoice sudah punya mayar_link dan mayar_jumlah sama dengan sisa tagihan, kembalikan tautan itu
-    if (
-      invoice.mayar_link &&
-      invoice.mayar_jumlah &&
-      Number(invoice.mayar_jumlah) === sisa
-    ) {
-      return NextResponse.json({
-        link: invoice.mayar_link,
-        mayar_invoice_id: invoice.mayar_invoice_id,
-        jumlah: sisa,
-      });
-    }
-
-    // 4. Bila belum ada atau jumlahnya berbeda, buat invoice di Mayar memakai MAYAR_API_KEY dan MAYAR_BASE_URL
+    // 3. Konfigurasi gateway pembayaran Mayar
     const apiKey = process.env.MAYAR_API_KEY;
     const rawBaseUrl = process.env.MAYAR_BASE_URL || "https://api.mayar.io/hl/v2";
     const baseUrl = rawBaseUrl.replace(/\/+$/, "");
@@ -138,6 +125,47 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 4. Bila invoice sudah punya mayar_link dan mayar_jumlah sama dengan sisa tagihan,
+    // pastikan terlebih dahulu invoice di Mayar masih aktif (tidak expired / closed)
+    if (
+      invoice.mayar_link &&
+      invoice.mayar_invoice_id &&
+      invoice.mayar_jumlah &&
+      Number(invoice.mayar_jumlah) === sisa
+    ) {
+      try {
+        const controllerCek = new AbortController();
+        const timeoutCek = setTimeout(() => controllerCek.abort(), 5000);
+
+        const resCek = await fetch(`${baseUrl}/invoices/${invoice.mayar_invoice_id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+          signal: controllerCek.signal,
+        });
+        clearTimeout(timeoutCek);
+
+        if (resCek.ok) {
+          const dataCek = await resCek.json().catch(() => null);
+          const statusMayar = String(dataCek?.data?.status || "").toLowerCase();
+
+          // Hanya gunakan tautan lama bila statusnya bukan closed atau expired
+          if (statusMayar !== "closed" && statusMayar !== "expired") {
+            return NextResponse.json({
+              link: invoice.mayar_link,
+              mayar_invoice_id: invoice.mayar_invoice_id,
+              jumlah: sisa,
+            });
+          }
+        }
+      } catch {
+        // Bila terjadi kegagalan jaringan saat cek status, lanjutkan ke pembuatan invoice baru
+      }
+    }
+
+    // 5. Bila belum ada, nominal berbeda, atau faktur lama sudah kedaluwarsa, buat invoice baru di Mayar
     // Ambil item dari billing_items
     const { data: billingItems, error: errItems } = await supabase
       .from("billing_items")
