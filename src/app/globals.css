@@ -66,75 +66,77 @@
 }
 
 :root {
-  /* Palet Warna Modern: Primary #4975CC, Header/Sidebar #7546C2, Base #E9D4C3 */
-  --primary: #4975CC;
-  --primary-foreground: #FFFFFF;
-  --primary-strong: #36599B;
-  --primary-soft: #E2EAF8;
-  --bg-app: #E9D4C3;
-  --bg-panel: #FFFFFF;
-  --text: #1F2937;
-  --text-body: #374151;
-  --text-muted: #6B7280;
-  --success: #16A34A;
-  --warning: #D97706;
-  --danger: #DC2626;
+  /* Preset b6F9O1A7E (Theme Base-Nova Violet & Crisp Neutral) */
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.496 0.265 301.924);
+  --primary-foreground: oklch(0.977 0.014 308.299);
+  --primary-strong: oklch(0.438 0.218 303.724);
+  --primary-soft: oklch(0.967 0.015 301.924);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.496 0.265 301.924);
+  --radius: 0.625rem;
 
-  /* Warna status WO */
-  --status-menunggu: #9CA3AF;
-  --status-dikerjakan: #4975CC;
-  --status-tertunda: #D97706;
+  /* Token App Mapping */
+  --bg-app: var(--background);
+  --bg-panel: var(--card);
+  --text: var(--foreground);
+  --text-body: oklch(0.35 0 0);
+  --text-muted: var(--muted-foreground);
+  --success: oklch(0.62 0.19 145);
+  --warning: oklch(0.75 0.18 75);
+  --danger: var(--destructive);
+
+  /* Warna status WO konsisten PRD 7.1 */
+  --status-menunggu: #9E9E9E;
+  --status-dikerjakan: oklch(0.496 0.265 301.924);
+  --status-tertunda: #F59E0B;
   --status-selesai: #7546C2;
   --status-siap-diambil: #16A34A;
   --status-diambil: #15803D;
   --status-dibatalkan: #DC2626;
 
-  /* Tema shadcn/ui */
-  --background: var(--bg-app);
-  --foreground: var(--text);
-  --card: var(--bg-panel);
-  --card-foreground: var(--text);
-  --popover: var(--bg-panel);
-  --popover-foreground: var(--text);
-  --secondary: var(--primary-soft);
-  --secondary-foreground: var(--primary-strong);
-  --muted: #DFCEBE;
-  --muted-foreground: var(--text-muted);
-  --accent: var(--primary-soft);
-  --accent-foreground: var(--primary-strong);
-  --destructive: var(--danger);
-  --border: #DEC8B5;
-  --input: #D4BDAB;
-  --ring: #4975CC;
-  --chart-1: #4975CC;
-  --chart-2: #16A34A;
-  --chart-3: #D97706;
-  --chart-4: #7546C2;
-  --chart-5: #DC2626;
-  --radius: 12px;
-
-  /* Sidebar & Navigation (#7546C2) */
+  /* Sidebar (#7546C2) */
   --sidebar: #7546C2;
   --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #4975CC;
+  --sidebar-primary: oklch(0.496 0.265 301.924);
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: rgba(255, 255, 255, 0.15);
   --sidebar-accent-foreground: #FFFFFF;
   --sidebar-border: #6538AE;
-  --sidebar-ring: #4975CC;
+  --sidebar-ring: oklch(0.496 0.265 301.924);
+
+  /* Charts */
+  --chart-1: oklch(0.496 0.265 301.924);
+  --chart-2: oklch(0.62 0.19 145);
+  --chart-3: oklch(0.75 0.18 75);
+  --chart-4: #7546C2;
+  --chart-5: oklch(0.577 0.245 27.325);
 }
 
 /* Card & Shadow Enhancement */
 [data-slot="card"] {
-  background-color: #FFFFFF !important;
-  border-color: #DEC8B5 !important;
-  box-shadow: 0 4px 14px -2px rgba(117, 70, 194, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.04) !important;
-  border-radius: 14px !important;
+  background-color: var(--card) !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
+  border-radius: var(--radius) !important;
   transition: all 0.2s ease-in-out;
 }
 
 [data-slot="card"]:hover {
-  box-shadow: 0 6px 20px -2px rgba(73, 117, 204, 0.08), 0 3px 8px -1px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 4px 14px -2px rgba(117, 70, 194, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04) !important;
 }
 
 @layer base {
