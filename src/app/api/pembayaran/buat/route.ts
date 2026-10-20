@@ -151,7 +151,8 @@ export async function POST(req: NextRequest) {
           const dataCek = await resCek.json().catch(() => null);
           const statusMayar = String(dataCek?.data?.status || "").toLowerCase();
 
-          // Hanya gunakan tautan lama bila statusnya bukan closed atau expired
+          // Hanya bila statusnya benar-benar 'closed' atau 'expired' kita buat ulang.
+          // Jika statusnya bukan closed/expired (misal unpaid), kembalikan tautan yang ada.
           if (statusMayar !== "closed" && statusMayar !== "expired") {
             return NextResponse.json({
               link: invoice.mayar_link,
@@ -159,9 +160,21 @@ export async function POST(req: NextRequest) {
               jumlah: sisa,
             });
           }
+        } else {
+          // Bila resCek gagal (misal 404, rate-limit, atau beda key), tetap gunakan tautan yang sudah ada
+          return NextResponse.json({
+            link: invoice.mayar_link,
+            mayar_invoice_id: invoice.mayar_invoice_id,
+            jumlah: sisa,
+          });
         }
       } catch {
-        // Bila terjadi kegagalan jaringan saat cek status, lanjutkan ke pembuatan invoice baru
+        // Bila terjadi kegagalan jaringan saat cek status, tetap gunakan tautan yang sudah ada
+        return NextResponse.json({
+          link: invoice.mayar_link,
+          mayar_invoice_id: invoice.mayar_invoice_id,
+          jumlah: sisa,
+        });
       }
     }
 
@@ -267,12 +280,17 @@ export async function POST(req: NextRequest) {
     const dataMayar = await resMayar.json().catch(() => null);
 
     if (!resMayar.ok || !dataMayar?.data?.link) {
-      const pesanMayar =
+      let pesanMayar =
         typeof dataMayar?.messages === "string"
           ? dataMayar.messages
           : Array.isArray(dataMayar?.messages)
             ? dataMayar.messages.join(", ")
             : "Terjadi kesalahan saat memproses permintaan di Mayar.";
+
+      if (pesanMayar.toLowerCase().includes("scope not allowed to write")) {
+        pesanMayar =
+          "API KEY Scope not allowed to write. API KEY Mayar pada server Netlify berstatus 'Read Only'. Harap buat API Key baru dengan Scope 'Read & Write' di Dashboard Mayar dan perbarui MAYAR_API_KEY di Netlify Environment Variables.";
+      }
 
       return NextResponse.json(
         { error: `Gagal membuat invoice Mayar: ${pesanMayar}` },

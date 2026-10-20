@@ -72,16 +72,18 @@ export default async function RincianWorkOrder({
     });
   }
 
-  // Format list foto dengan signed URLs & thumbnails
-  const daftarFoto = photos.map((p) => {
-    const thumbPath = p.path.replace(/\/(stnk|kondisi_awal|kondisi_akhir|pengerjaan)\//, "/$1/thumb/");
-    return {
-      id: p.id,
-      jenis: p.jenis,
-      url: signedUrlsMap[p.path] || "",
-      thumbUrl: signedUrlsMap[thumbPath] || signedUrlsMap[p.path] || "",
-    };
-  });
+  // Format list foto dengan signed URLs & thumbnails (hanya sertakan yang valid)
+  const daftarFoto = photos
+    .map((p) => {
+      const thumbPath = p.path.replace(/\/(stnk|kondisi_awal|kondisi_akhir|pengerjaan)\//, "/$1/thumb/");
+      return {
+        id: p.id,
+        jenis: p.jenis,
+        url: signedUrlsMap[p.path] || "",
+        thumbUrl: signedUrlsMap[thumbPath] || signedUrlsMap[p.path] || "",
+      };
+    })
+    .filter((f) => Boolean(f.url));
 
   const fotoStnk = daftarFoto.filter((f) => f.jenis === "stnk");
   const fotoKondisiAwal = daftarFoto.filter((f) => f.jenis === "kondisi_awal");

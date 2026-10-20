@@ -33,16 +33,27 @@ export function GaleriFotoWO({
     <div className="space-y-2">
       <div className="text-xs font-semibold text-text-muted">{judul}</div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {foto
-          .filter((f) => Boolean(f.thumbUrl || f.url))
-          .map((f) => (
+        {foto.map((f) => {
+          const src = f.thumbUrl || f.url;
+          if (!src) {
+            return (
+              <div
+                key={f.id}
+                className="relative aspect-video flex flex-col items-center justify-center rounded-md border border-dashed border-border bg-muted/50 p-2 text-center"
+              >
+                <span className="text-[11px] text-muted-foreground">Foto tidak ditemukan</span>
+              </div>
+            );
+          }
+
+          return (
             <div
               key={f.id}
-              onClick={() => setFotoAktif(f.url)}
+              onClick={() => f.url && setFotoAktif(f.url)}
               className="group relative aspect-video cursor-pointer overflow-hidden rounded-md border border-border bg-muted transition-transform hover:scale-[1.02]"
             >
               <Image
-                src={f.thumbUrl || f.url}
+                src={src}
                 alt={judul}
                 fill
                 unoptimized
@@ -53,7 +64,8 @@ export function GaleriFotoWO({
                 <ZoomIn className="size-5 text-white" />
               </div>
             </div>
-          ))}
+          );
+        })}
       </div>
 
       <Dialog open={Boolean(fotoAktif)} onOpenChange={(open) => !open && setFotoAktif(null)}>
