@@ -124,51 +124,53 @@ begin
     raise exception 'Invoice tidak ditemukan';
   end if;
 
-  -- 2. Catat pembayaran hanya bila invoice belum lunas
-  if v_inv.status_bayar <> 'lunas' then
-    v_sisa := v_inv.total - v_inv.terbayar;
-
-    -- Tentukan nominal pembayaran (prioritaskan mayar_jumlah, atau sisa tagihan)
-    v_jumlah_bayar := coalesce(v_inv.mayar_jumlah, v_sisa);
-    if v_jumlah_bayar > v_sisa or v_jumlah_bayar <= 0 then
-      v_jumlah_bayar := v_sisa;
-    end if;
-
-    -- Ambil profil Owner atau Admin untuk mengisi kolom dicatat_oleh
-    select id into v_dicatat_oleh
-    from public.profiles
-    where role in ('owner', 'admin')
-    order by role = 'owner' desc
-    limit 1;
-
-    -- Catat ke tabel payments dengan metode 'mayar'
-    insert into public.payments (
-      invoice_id,
-      metode,
-      jumlah,
-      dicatat_oleh
-    )
-    values (
-      p_invoice_id,
-      'mayar',
-      v_jumlah_bayar,
-      v_dicatat_oleh
-    );
-
-    -- Perbarui status dan total terbayar pada invoice
-    v_terbayar_baru := v_inv.terbayar + v_jumlah_bayar;
-    if v_terbayar_baru >= v_inv.total then
-      v_status_bayar := 'lunas';
-    else
-      v_status_bayar := 'sebagian';
-    end if;
-
-    update public.invoices
-    set terbayar = v_terbayar_baru,
-        status_bayar = v_status_bayar,
-        dibayar_online_at = now()
-    where id = p_invoice_id;
+  -- 2. Hanya sekali: berhenti tanpa mencatat apa pun bila invoice sudah lunas
+  if v_inv.status_bayar = 'lunas' then
+    return;
   end if;
+
+  v_sisa := v_inv.total - v_inv.terbayar;
+
+  -- Tentukan nominal pembayaran (prioritaskan mayar_jumlah, atau sisa tagihan)
+  v_jumlah_bayar := coalesce(v_inv.mayar_jumlah, v_sisa);
+  if v_jumlah_bayar > v_sisa or v_jumlah_bayar <= 0 then
+    v_jumlah_bayar := v_sisa;
+  end if;
+
+  -- Ambil profil Owner atau Admin untuk mengisi kolom dicatat_oleh
+  select id into v_dicatat_oleh
+  from public.profiles
+  where role in ('owner', 'admin')
+  order by role = 'owner' desc
+  limit 1;
+
+  -- Catat ke tabel payments dengan metode 'mayar'
+  insert into public.payments (
+    invoice_id,
+    metode,
+    jumlah,
+    dicatat_oleh
+  )
+  values (
+    p_invoice_id,
+    'mayar',
+    v_jumlah_bayar,
+    v_dicatat_oleh
+  );
+
+  -- Perbarui status dan total terbayar pada invoice
+  v_terbayar_baru := v_inv.terbayar + v_jumlah_bayar;
+  if v_terbayar_baru >= v_inv.total then
+    v_status_bayar := 'lunas';
+  else
+    v_status_bayar := 'sebagian';
+  end if;
+
+  update public.invoices
+  set terbayar = v_terbayar_baru,
+      status_bayar = v_status_bayar,
+      dibayar_online_at = now()
+  where id = p_invoice_id;
 
   -- 3. Catat payload ke tabel mayar_webhook_log bila disediakan
   if p_payload is not null or p_event is not null then
