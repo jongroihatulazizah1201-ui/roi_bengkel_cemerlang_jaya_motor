@@ -33,24 +33,27 @@ export function GaleriFotoWO({
     <div className="space-y-2">
       <div className="text-xs font-semibold text-text-muted">{judul}</div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {foto.map((f) => (
-          <div
-            key={f.id}
-            onClick={() => setFotoAktif(f.url)}
-            className="group relative aspect-video cursor-pointer overflow-hidden rounded-md border border-border bg-muted transition-transform hover:scale-[1.02]"
-          >
-            <Image
-              src={f.thumbUrl || f.url}
-              alt={judul}
-              fill
-              className="object-cover transition-opacity group-hover:opacity-90"
-              sizes="(max-width: 640px) 50vw, 33vw"
-            />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
-              <ZoomIn className="size-5 text-white" />
+        {foto
+          .filter((f) => Boolean(f.thumbUrl || f.url))
+          .map((f) => (
+            <div
+              key={f.id}
+              onClick={() => setFotoAktif(f.url)}
+              className="group relative aspect-video cursor-pointer overflow-hidden rounded-md border border-border bg-muted transition-transform hover:scale-[1.02]"
+            >
+              <Image
+                src={f.thumbUrl || f.url}
+                alt={judul}
+                fill
+                unoptimized
+                className="object-cover transition-opacity group-hover:opacity-90"
+                sizes="(max-width: 640px) 50vw, 33vw"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
+                <ZoomIn className="size-5 text-white" />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       <Dialog open={Boolean(fotoAktif)} onOpenChange={(open) => !open && setFotoAktif(null)}>
@@ -62,6 +65,7 @@ export function GaleriFotoWO({
                 src={fotoAktif}
                 alt="Foto ukuran penuh"
                 fill
+                unoptimized
                 className="object-contain"
                 sizes="100vw"
                 priority
