@@ -101,7 +101,7 @@ export default async function HalamanDashboard({
   const peran = profil.peran;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-12">
       {/* Baris Atas: Salam & Penyaring Periode (PRD 12.1) */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -134,7 +134,7 @@ export default async function HalamanDashboard({
           1. KARTU KPI OWNER (PRD 12.2: 6 Kartu)
       ======================================================== */}
       {peran === "owner" && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 min-[1680px]:grid-cols-6 gap-4 sm:gap-5">
           <KartuKPI
             label="Total Pendapatan"
             nilai={rupiah(ringkasan.pendapatan || 0)}

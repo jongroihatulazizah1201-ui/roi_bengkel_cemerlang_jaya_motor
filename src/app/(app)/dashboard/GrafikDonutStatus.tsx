@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRouter } from "next/navigation";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
@@ -46,16 +46,16 @@ export function GrafikDonutStatus({ data }: { data: DataStatusWO[] }) {
             <p className="text-xs">Data status akan muncul saat WO dibuat.</p>
           </div>
         ) : (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="h-[220px] w-full sm:w-[220px] relative flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-3">
+            <div className="h-[200px] w-full relative flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={dataValid}
                     dataKey="jumlah"
                     nameKey="status"
-                    innerRadius={55}
-                    outerRadius={80}
+                    innerRadius={50}
+                    outerRadius={75}
                     paddingAngle={3}
                     cursor="pointer"
                     onClick={(_, index) => { const item = dataValid[index]; if (item?.status) klikStatus(item.status); }}
@@ -92,8 +92,8 @@ export function GrafikDonutStatus({ data }: { data: DataStatusWO[] }) {
               </div>
             </div>
 
-            {/* Legenda Interaktif */}
-            <div className="flex flex-col gap-1.5 w-full sm:w-auto text-xs">
+            {/* Legenda Interaktif: Grid 2 Kolom Rapi di Bawah Donut */}
+            <div className="grid grid-cols-2 gap-1.5 w-full text-xs pt-2 border-t border-border/50">
               {dataValid.map((item) => {
                 const label = isStatusWO(item.status) ? STATUS_WO[item.status].label : item.status;
                 const warna = WARNA_HEX[item.status] || "#9E9E9E";
@@ -102,13 +102,14 @@ export function GrafikDonutStatus({ data }: { data: DataStatusWO[] }) {
                     key={item.status}
                     type="button"
                     onClick={() => klikStatus(item.status)}
-                    className="flex items-center justify-between gap-3 px-2 py-1 rounded hover:bg-bg-app transition text-left cursor-pointer group"
+                    className="flex items-center justify-between gap-1.5 px-2 py-1.5 rounded-md hover:bg-bg-app transition text-left cursor-pointer group text-[11px]"
+                    title={`Klik untuk lihat WO ${label}`}
                   >
-                    <span className="flex items-center gap-2">
-                      <span className="size-2 rounded-full" style={{ backgroundColor: warna }} />
-                      <span className="text-text-muted group-hover:text-text">{label}</span>
+                    <span className="flex items-center gap-1.5 truncate">
+                      <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: warna }} />
+                      <span className="text-text-muted group-hover:text-text truncate">{label}</span>
                     </span>
-                    <span className="font-semibold text-text tabular-nums">{item.jumlah}</span>
+                    <span className="font-bold text-text tabular-nums shrink-0">{item.jumlah}</span>
                   </button>
                 );
               })}

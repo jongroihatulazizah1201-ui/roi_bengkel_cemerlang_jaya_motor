@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { ArrowUpRight, ArrowDownRight, Minus, LucideIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "cn";
@@ -32,29 +32,30 @@ export function KartuKPI({
         href && "group-hover:border-primary/40 group-hover:shadow-md"
       )}
     >
-      <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-        <CardTitle className="text-xs font-medium text-text-muted group-hover:text-text transition-colors">
+      <CardHeader className="flex flex-row items-center justify-between p-4 pb-2 sm:p-5 sm:pb-2 space-y-0">
+        <CardTitle className="text-xs sm:text-sm font-medium text-text-muted group-hover:text-text transition-colors truncate">
           {label}
         </CardTitle>
-        <div className={cn("p-2 rounded-lg transition-transform group-hover:scale-105", warnaIkon)}>
+        <div className={cn("p-2 rounded-lg transition-transform group-hover:scale-105 shrink-0 ml-2", warnaIkon)}>
           <Ikon className="size-4" />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 pt-0 sm:p-5 sm:pt-0">
         <div
           className={cn(
-            "text-2xl font-bold tracking-tight text-text tabular-nums",
+            "text-xl sm:text-2xl font-bold tracking-tight text-text tabular-nums whitespace-nowrap overflow-hidden text-ellipsis",
             peringatan && "text-red-600"
           )}
+          title={typeof nilai === "string" ? nilai : String(nilai)}
         >
           {nilai}
         </div>
 
-        <div className="flex items-center gap-2 mt-2 text-xs">
+        <div className="flex items-center gap-1.5 sm:gap-2 mt-2 text-xs flex-wrap">
           {persenPerubahan !== undefined && persenPerubahan !== null && (
             <span
               className={cn(
-                "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-semibold tabular-nums",
+                "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-semibold tabular-nums shrink-0",
                 persenPerubahan > 0
                   ? "bg-emerald-500/10 text-emerald-600"
                   : persenPerubahan < 0
@@ -73,7 +74,7 @@ export function KartuKPI({
             </span>
           )}
 
-          {subtext && <span className="text-text-muted truncate">{subtext}</span>}
+          {subtext && <span className="text-text-muted text-[11px] sm:text-xs truncate">{subtext}</span>}
         </div>
       </CardContent>
     </Card>
@@ -81,11 +82,12 @@ export function KartuKPI({
 
   if (href) {
     return (
-      <Link href={href} className="block group transition-all duration-200 hover:-translate-y-0.5 cursor-pointer">
+      <Link href={href} className="block group transition-all duration-200 hover:-translate-y-0.5 cursor-pointer h-full">
         {kontenKartu}
       </Link>
     );
   }
 
-  return <div className="block">{kontenKartu}</div>;
+  return <div className="block h-full">{kontenKartu}</div>;
 }
+
